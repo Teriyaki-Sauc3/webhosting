@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Math Tasks - Single Page</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; padding: 15px; max-width:900px; margin:0 auto; }
+    .card { border:2px solid #ddd; padding:14px; border-radius:8px; margin-bottom:12px; }
+    label { display:block; margin-top:8px; }
+    input[type=text], input[type=number] { width:100%; padding:8px; box-sizing:border-box; }
+    button { margin-top:10px; padding:8px 12px; }
+    .result { background:#f3f3f3; padding:10px; border-radius:6px; margin-top:8px; }
+    header { display:flex; justify-content:space-between; align-items:center; }
+    nav a { margin-left:10px; }
+    .flash { color:#900; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Math Tasks</h1>
+    <nav>
+      <a href="#task1">Factorial</a>
+      <a href="#task2">Remove duplicates</a>
+      <a href="#task3">Circle</a>
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="card" style="border-color:#f99;">
+        {% for m in messages %}
+          <div class="flash">{{ m }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Each task uses its own <form> so you can submit one without filling the others -->
+  <div id="task1" class="card">
+    <h2>Task 1 — Factorial</h2>
+    <form method="post" action="{{ url_for('index') }}">
+      <input type="hidden" name="which" value="task1">
+      <label>Number (integer):
+        <input name="number" type="number" min="0" value="{{ request.form.number or '' }}">
+      </label>
+      <button type="submit">Compute Factorial</button>
+    </form>
+
+    {% if result and result.task == 'task1' %}
+      <div class="result">Factorial of {{ result.n }} is <strong>{{ result.value }}</strong></div>
+    {% endif %}
+  </div>
+
+  <div id="task2" class="card">
+    <h2>Task 2 — Remove duplicates</h2>
+    <form method="post" action="{{ url_for('index') }}">
+      <input type="hidden" name="which" value="task2">
+      <label>Numbers (space-separated):
+        <input name="numbers" type="text" placeholder="e.g. 1 2 3 2 4 1" value="{{ request.form.numbers or '' }}">
+      </label>
+      <button type="submit">Remove Duplicates</button>
+    </form>
+
+    {% if result and result.task == 'task2' %}
+      <div class="result">List with duplicates removed: {{ result.value }}</div>
+    {% endif %}
+  </div>
+
+  <div id="task3" class="card">
+    <h2>Task 3 — Circle properties</h2>
+    <form method="post" action="{{ url_for('index') }}">
+      <input type="hidden" name="which" value="task3">
+      <label>Radius (number):
+        <input name="radius" type="number" step="any" min="0" value="{{ request.form.radius or '' }}">
+      </label>
+      <button type="submit">Compute</button>
+    </form>
+
+    {% if result and result.task == 'task3' %}
+      <div class="result">
+        <div>diameter: {{ result.value.diameter }}</div>
+        <div>circumference: {{ result.value.circumference }}</div>
+        <div>area: {{ result.value.area }}</div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
